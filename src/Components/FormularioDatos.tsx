@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import IconButton from '../images/icon-arrow.svg';
+import { useIp } from './hook/useIp';
 interface props{
   MandarDatosPin: (latitud: number, longitud: number) => void;
 }
 export const FormularioDatos = ({MandarDatosPin}: props) => {
-  const [buscar, setBuscar] = useState("8.8.8.8");
-  const [ip, setIp] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [timezone, setTimezone] = useState<string>("");
-  const [isp, setIsp] = useState<string>("");
-  const API_KEY = import.meta.env.VITE_API_KEY;
-  const getInfoCiudad = async(buscar:string) =>{
-    if(!buscar) return; 
-    const valor = buscar.trim();
-    const esIp =  /^\d+\.\d+\.\d+\.\d+$/.test(valor) || valor.includes(":");
-    const parametro = esIp ? "ipAddress": "domain";
-    const response = await fetch( `https://geo.ipify.org/api/v2/country,city?apiKey=${API_KEY}&${parametro}=${buscar}`);
-    const data = await response.json();
-    const datos = await data;
-    setIp(datos.ip);
-    setLocation(`${datos.location.city} , ${datos.location.region} ${datos.location.postalCode}`);
-    setTimezone(datos.location.timezone);
-    setIsp(datos.isp);
-    MandarDatosPin(Number(datos.location.lat), Number(datos.location.lng));
-    }
-  useEffect(()=>{ 
-     getInfoCiudad(buscar);
-  },[buscar]);
+  const[buscar, setBuscar] = useState<string>("8.8.8.8");
+  const {ip, isp, location, timezone, lat, lng} = useIp(buscar);
+  useEffect(()=>{
+    MandarDatosPin(lat, lng);
+  },[lat, lng]);
   return (
     <div className='relative w-full flex flex-col items-center gap-4 pt-6 px-5.5 md:pt-0'>
       <h1 className='text-white rubik-medium text-2xl my-2'>IP address Tracker</h1>
