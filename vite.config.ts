@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: 'ip-address-tracker-master',
+  base: '/ip-address-tracker-master/',
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()],
